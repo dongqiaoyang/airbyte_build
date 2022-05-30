@@ -43,7 +43,7 @@ jobs:
             minikube start --memory=4000
         - name: run skaffold
           run: |
-            skaffold dev
+            cd airbyte && skaffold dev
 
 #       - uses: "actions/checkout@v3"
 #         with:
