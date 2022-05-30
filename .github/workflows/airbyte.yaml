@@ -9,13 +9,11 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-        - uses: "actions/checkout@v3"
-          # with:
-            # repository: "telus/dse-cicd-test-lab"
         - name: "Cloning repo"
           uses: actions/checkout@v3
           with:
             repository: "airbytehq/airbyte"
+        - uses: "actions/checkout@v3"
         - name: "Install Gcloud"
           uses: "google-github-actions/setup-gcloud@v0"
           with:
