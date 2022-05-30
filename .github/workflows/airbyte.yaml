@@ -22,6 +22,12 @@ jobs:
             ls -la
             echo echo
             ls .github
+        - name: copy skaffold yaml into airbyte
+          run: |
+            cp .github/skaffold.yaml airbyte/skaffold.yaml
+        - name: check skaffold location  
+          run: |
+            ls airbyte
         # - name: "Install Gcloud"
           # uses: "google-github-actions/setup-gcloud@v0"
           # with:
