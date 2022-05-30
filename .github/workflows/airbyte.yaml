@@ -9,35 +9,37 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-        - name: "Cloning repo"
+        - name: "Cloning Airbyte repo"
           uses: actions/checkout@v3
           with:
             repository: "airbytehq/airbyte"
-        - uses: "actions/checkout@v3"
-        - name: "Install Gcloud"
-          uses: "google-github-actions/setup-gcloud@v0"
-          with:
-            install_components: "skaffold"
-        - name: 'Install HELM 3'
-          uses: azure/setup-helm@v1
-        # - name: 'Rendering test for Deployment'
-          # run: helm template test
-        - name: sample command
+        - name: "Cloning branch "
+          uses: "actions/checkout@v3"
+        - name: check files 
           run: |
-            kubectl version --client=true
-            helm version
-            skaffold version
-            pwd
             ls -la
-        - name: build minikube
-          id: minikube
-          uses: medyagh/setup-minikube@master
-        - name: start minikube
-          run: |
-            minikube start --memory=4000
-        - name: run skaffold
-          run: |
-            skaffold dev
+        # - name: "Install Gcloud"
+          # uses: "google-github-actions/setup-gcloud@v0"
+          # with:
+            # install_components: "skaffold"
+        # - name: 'Install HELM 3'
+          # uses: azure/setup-helm@v1
+        # - name: sample command
+          # run: |
+            # kubectl version --client=true
+            # helm version
+            # skaffold version
+            # pwd
+            # ls -la
+        # - name: build minikube
+          # id: minikube
+          # uses: medyagh/setup-minikube@master
+        # - name: start minikube
+          # run: |
+            # minikube start --memory=4000
+        # - name: run skaffold
+          # run: |
+            # skaffold dev
 
 #       - uses: "actions/checkout@v3"
 #         with:
