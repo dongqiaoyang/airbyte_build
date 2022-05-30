@@ -16,40 +16,34 @@ jobs:
           with:
             repository: "airbytehq/airbyte"
             path: './airbyte'
-        - name: check files 
-          run: |
-            pwd
-            ls -la
-            echo echo
-            ls .github
         - name: copy skaffold yaml into airbyte
           run: |
             cp .github/skaffold.yaml airbyte/skaffold.yaml
         - name: check skaffold location  
           run: |
             ls airbyte
-        # - name: "Install Gcloud"
-          # uses: "google-github-actions/setup-gcloud@v0"
-          # with:
-            # install_components: "skaffold"
-        # - name: 'Install HELM 3'
-          # uses: azure/setup-helm@v1
-        # - name: sample command
-          # run: |
-            # kubectl version --client=true
-            # helm version
-            # skaffold version
-            # pwd
-            # ls -la
-        # - name: build minikube
-          # id: minikube
-          # uses: medyagh/setup-minikube@master
-        # - name: start minikube
-          # run: |
-            # minikube start --memory=4000
-        # - name: run skaffold
-          # run: |
-            # skaffold dev
+        - name: "Install Gcloud"
+          uses: "google-github-actions/setup-gcloud@v0"
+          with:
+            install_components: "skaffold"
+        - name: 'Install HELM 3'
+          uses: azure/setup-helm@v1
+        - name: sample command
+          run: |
+            kubectl version --client=true
+            helm version
+            skaffold version
+            pwd
+            ls -la
+        - name: build minikube
+          id: minikube
+          uses: medyagh/setup-minikube@master
+        - name: start minikube
+          run: |
+            minikube start --memory=4000
+        - name: run skaffold
+          run: |
+            skaffold dev
 
 #       - uses: "actions/checkout@v3"
 #         with:
