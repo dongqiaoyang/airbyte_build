@@ -35,12 +35,16 @@ jobs:
             skaffold version
             pwd
             ls -la
+        - name: install bitnami helm repo
+          run: |
+            helm repo add bitnami https://charts.bitnami.com/bitnami
         - name: build minikube
           id: minikube
           uses: medyagh/setup-minikube@master
         - name: start minikube
           run: |
             minikube start --memory=4000
+
         - name: run skaffold
           run: |
             cd airbyte && skaffold dev
