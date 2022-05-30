@@ -9,21 +9,25 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-        - uses: "actions/checkout@v3"
-          with:
-            repository: "telus/dse-cicd-test-lab"
-        - name: "Cloning repo"
+        - name: "Cloning branch "
+          uses: "actions/checkout@v3"
+        - name: "Cloning Airbyte repo"
           uses: actions/checkout@v3
           with:
             repository: "airbytehq/airbyte"
+            path: './airbyte'
+        - name: copy skaffold yaml into airbyte
+          run: |
+            cp .github/skaffold.yaml airbyte/skaffold.yaml
+        - name: check skaffold location  
+          run: |
+            ls airbyte
         - name: "Install Gcloud"
           uses: "google-github-actions/setup-gcloud@v0"
           with:
             install_components: "skaffold"
         - name: 'Install HELM 3'
           uses: azure/setup-helm@v1
-        # - name: 'Rendering test for Deployment'
-          # run: helm template test
         - name: sample command
           run: |
             kubectl version --client=true
@@ -31,6 +35,9 @@ jobs:
             skaffold version
             pwd
             ls -la
+        - name: install bitnami helm repo
+          run: |
+            helm repo add bitnami https://charts.bitnami.com/bitnami
         - name: build minikube
           id: minikube
           uses: medyagh/setup-minikube@master
@@ -39,8 +46,14 @@ jobs:
             minikube start --memory=4000
         - name: run skaffold
           run: |
-            skaffold dev
-
+            cd airbyte && skaffold run
+        - name: port forward
+          run: |
+            export POD_NAME=$(kubectl get pods --namespace default -l "airbyte=webapp" -o jsonpath="{.items[0].metadata.name}")
+            export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+            echo "Visit http://127.0.0.1:8080 to use your application"
+            kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+            
 #       - uses: "actions/checkout@v3"
 #         with:
 #           fetch-depth: 2
