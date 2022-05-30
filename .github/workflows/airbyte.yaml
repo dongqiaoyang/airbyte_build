@@ -9,12 +9,12 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
+        - name: "Cloning branch "
+          uses: "actions/checkout@v3"
         - name: "Cloning Airbyte repo"
           uses: actions/checkout@v3
           with:
             repository: "airbytehq/airbyte"
-        - name: "Cloning branch "
-          uses: "actions/checkout@v3"
         - name: check files 
           run: |
             pwd
