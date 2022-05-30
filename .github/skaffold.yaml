@@ -1,0 +1,17 @@
+# apiVersion: skaffold/v2beta26
+apiVersion: skaffold/v2beta16
+kind: Config
+deploy:
+  helm:
+    releases:
+      # - name: bitnami
+      #   remoteChart: https://charts.bitnami.com/bitnami
+      - name: airbyte
+        # namespace: default
+        # Using Helm secrets plugin to process secrets before deploying
+        # useHelmSecrets: true
+        # Location of the chart - here, we use a local chart
+        chartPath: ./charts/airbyte/
+        # skipBuildDependencies: true
+        valuesFiles: 
+          - ./charts/airbyte/values.yaml

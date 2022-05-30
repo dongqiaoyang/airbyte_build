@@ -1,0 +1,77 @@
+name: build_airbyte
+
+on: [pull_request]
+
+jobs:
+  build_airbyte:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+        - uses: "actions/checkout@v3"
+          with:
+            repository: "telus/dse-cicd-test-lab"
+        - name: "Cloning repo"
+          uses: actions/checkout@v3
+          with:
+            repository: "airbytehq/airbyte"
+        - name: "Install Gcloud"
+          uses: "google-github-actions/setup-gcloud@v0"
+          with:
+            install_components: "skaffold"
+        - name: 'Install HELM 3'
+          uses: azure/setup-helm@v1
+        # - name: 'Rendering test for Deployment'
+          # run: helm template test
+        - name: sample command
+          run: |
+            kubectl version --client=true
+            helm version
+            skaffold version
+            pwd
+            ls -la
+        - name: build minikube
+          id: minikube
+          uses: medyagh/setup-minikube@master
+        - name: start minikube
+          run: |
+            minikube start --memory=4000
+        - name: run skaffold
+          run: |
+            skaffold dev
+
+#       - uses: "actions/checkout@v3"
+#         with:
+#           fetch-depth: 2
+#       - name: "Google Auth"
+#         uses: "google-github-actions/auth@v0"
+#         with:
+#           workload_identity_provider: ${{ secrets.CDO_WORKLOAD_IDENTITY_PROVIDER_GCP }}
+#           service_account: "cicd-service-account@cio-workbench-image-np-0ddefe.iam.gserviceaccount.com"
+#       - name: "Install Gcloud"
+#         uses: "google-github-actions/setup-gcloud@v0"
+#       - name: "Diff Vertex Images"
+#         run: ./.github/scripts/diff_images.sh -t vertex_pipelines
+#       - name: "Diff Dataflow Images"
+#         run: ./.github/scripts/diff_images.sh -t dataflow_jobs
+#       - name: "Diff Common Images"
+#         run: ./.github/scripts/diff_images.sh -t common/containers
+#       - name: "Build & Tag Images"
+#         run: |
+#           gcloud auth configure-docker northamerica-northeast1-docker.pkg.dev --quiet
+#           cat DIFF_IMAGES.txt | while read image_folder; do
+#             version=$(cat "${image_folder}/VERSION")
+#             env_tag="northamerica-northeast1-docker.pkg.dev/cio-workbench-image-np-0ddefe/bi-platform/${{ github.event.repository.name }}/"${image_folder}":${version}"
+#             version_tag="northamerica-northeast1-docker.pkg.dev/cio-workbench-image-np-0ddefe/bi-platform/${{ github.event.repository.name }}/"${image_folder}":${version}"
+#             docker build -t "${version_tag}" "${image_folder}"
+#             docker push "${version_tag}"
+#             gcloud container images add-tag "${version_tag}" "${env_tag}" --quiet
+#           done
+#       - name: "Build Artifact"
+#         run: |
+#           version_tag="northamerica-northeast1-docker.pkg.dev/cio-workbench-image-np-0ddefe/bi-platform/${{ github.event.repository.name }}/bi_layer:${{ github.sha }}"
+#           latest_tag="northamerica-northeast1-docker.pkg.dev/cio-workbench-image-np-0ddefe/bi-platform/${{ github.event.repository.name }}/bi_layer:latest"
+#           docker build -f "./.github/scripts/Dockerfile" -t ${version_tag} .
+#           docker push "${version_tag}"
+#           gcloud container images add-tag "${version_tag}" "${latest_tag}" --quiet
